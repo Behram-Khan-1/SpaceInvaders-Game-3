@@ -27,7 +27,9 @@ public class PlayerShooting : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Instantiate(Bullet, transform.position + new Vector3(0, 0.1f, 0) * Speed, transform.rotation);
+            var spawnedBullet = Instantiate(Bullet, transform.position + new Vector3(0, 0.1f, 0), transform.rotation);
+            spawnedBullet.GetComponent<Bullet>().speed = Speed;
+            spawnedBullet.GetComponent<Bullet>().bulletType = BulletType.PlayerBullet;
             hasShot = true;
             fireRate = initialFireRate;
         }

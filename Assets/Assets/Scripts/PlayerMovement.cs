@@ -23,7 +23,7 @@ public class PlayerMovement : MonoBehaviour
     private void Movement()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
-        Debug.Log("Horizontal Input: " + horizontalInput);
+        // Debug.Log("Horizontal Input: " + horizontalInput);
 
 
         if (transform.position.x < leftBound )
