@@ -12,8 +12,8 @@ public class EnemyMovement : MonoBehaviour
     public float Timer = 0.5f;
     private float initialTimer;
 
-    Enemy leftMostEnemy = null;
-    Enemy rightMostEnemy = null;
+    [SerializeField] Enemy leftMostEnemy = null;
+    [SerializeField] Enemy rightMostEnemy = null;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -45,64 +45,67 @@ public class EnemyMovement : MonoBehaviour
 
         if (Vector2.Distance(rightMostEnemy.transform.position, new Vector2(rightBound, rightMostEnemy.transform.position.y)) < 0.1f
                 || Vector2.Distance(leftMostEnemy.transform.position, new Vector2(leftBound, rightMostEnemy.transform.position.y)) < 0.1f)
-            {
-                movementDirection *= -1;
-                transform.position = new Vector2(transform.position.x, transform.position.y + snapDistanceY);
-            }
+        {
+            movementDirection *= -1;
+            transform.position = new Vector2(transform.position.x, transform.position.y + snapDistanceY);
+            GameManager.instance.EnemyMoveToBottom();
+        }
+            
+        
     }
 
     public void GetExtremeChilds()
     {
-        List<Transform> rows = TotalRows();
+        List<Transform> totalEnemies = TotalEnemies();
+        
+        float leftMost = float.MaxValue;
+        float rightMost = float.MinValue;
 
-        foreach (Transform row in rows)
+        foreach (Transform enemy in totalEnemies)
         {
-            float leftMost = float.MaxValue;
-            float rightMost = float.MinValue;
-
-
-
-            foreach (Transform enemyTransform in row)
+            // Debug.Log("Enemy Position: " + enemy.name);
+            if (enemy.position.x < leftMost)
             {
-                float x = enemyTransform.position.x;
-                Enemy enemy = enemyTransform.GetComponent<Enemy>();
-
-                if (x < leftMost)
-                {
-                    leftMost = x;
-                    leftMostEnemy = enemy;
-                }
-
-                if (x > rightMost)
-                {
-                    rightMost = x;
-                    rightMostEnemy = enemy;
-                }
+                leftMost = enemy.position.x;
+                leftMostEnemy = enemy.GetComponent<Enemy>();
             }
 
-            // Then, reset all to false
-            foreach (Transform enemyTransform in row)
+            if (enemy.position.x > rightMost)
             {
-                enemyTransform.GetComponent<Enemy>().SetIsExtreme(false);
+                rightMost = enemy.position.x;
+                rightMostEnemy = enemy.GetComponent<Enemy>();
             }
 
-            // Finally, mark the two extremes
-            if (leftMostEnemy != null) leftMostEnemy.SetIsExtreme(true);
-            if (rightMostEnemy != null) rightMostEnemy.SetIsExtreme(true);
         }
     }
+    
 
-    public List<Transform> TotalRows()
+    public List<Transform> TotalEnemies()
     {
         int totalRows = transform.childCount;
-        List<Transform> rows = new List<Transform>();
+        List<Transform> totalEnemies = new List<Transform>();
 
         for (int i = 0; i < totalRows; i++)
         {
-            rows.Add(transform.GetChild(i));
+            for (int j = 0; j < transform.GetChild(i).childCount; j++)
+            {
+                totalEnemies.Add(transform.GetChild(i).GetChild(j));
+                // Debug.Log("Enemy: " + transform.GetChild(i).GetChild(j).name);
+            }
         }
+        return totalEnemies;
+    }
+    
+    public List<Transform> TotalRows()
+    {
+        int totalRows = transform.childCount;
+        List<Transform> totalRowsList = new List<Transform>();
 
-        return rows;
+        for (int i = 0; i < totalRows; i++)
+        {
+            totalRowsList.Add(transform.GetChild(i));
+        }
+        return totalRowsList;
     }
 }
 

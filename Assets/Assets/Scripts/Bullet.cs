@@ -27,15 +27,21 @@ public class Bullet : MonoBehaviour
             GameManager.instance.ResetActiveShooter(other.transform);
             Destroy(other.gameObject);
             Destroy(this.gameObject);
+            GameManager.instance.IncreaseScore(10);
         }
         else if (other.gameObject.tag == "Bullet")
         {
             Destroy(other.gameObject);
             Destroy(this.gameObject);
         }
+        else if (other.gameObject.tag == "Player" && bulletType == BulletType.EnemyBullet)
+        {
+            GameManager.instance.DecreaseHealth();
+            Destroy(this.gameObject);
+        }
         // else
         //lose HP
-        
+
     }
 
 }

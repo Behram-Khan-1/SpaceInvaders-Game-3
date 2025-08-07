@@ -54,28 +54,27 @@ public class EnemyShooting : MonoBehaviour
         int secondLastRowIndex = rows.IndexOf(deadShooter.parent) - 1;
         Transform secondLastRow = rows[secondLastRowIndex];
 
-        // if (secondLastRow == null)
-        // {
-        //     activeShooters.Remove(deadShooter);
-        //     return;
-        // }
-
         foreach (Transform enemy in secondLastRow)
+        {
+            if (enemy.position.x == deadShooter.position.x)
             {
-                if (enemy.position.x == deadShooter.position.x)
-                {
-                    activeShooters.Remove(deadShooter);
-                    activeShooters.Add(enemy);
-                }
+                activeShooters.Remove(deadShooter);
+                activeShooters.Add(enemy);
             }
+        }
         foreach (Transform row in rows)
         {
-            if(row.childCount == 0)
+            if (row.childCount == 0)
             {
                 Destroy(row.gameObject);
             }
         }
 
+    }
+    
+    public List<Transform> GetActiveShooters()
+    {
+        return activeShooters;
     }
 
 
