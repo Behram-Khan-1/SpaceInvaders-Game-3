@@ -29,6 +29,7 @@ public class EnemyShooting : MonoBehaviour
             var spawnedBullet = Instantiate(bulletPrefab, shooter.position + new Vector3(0, 0.1f, 0), transform.rotation);
             spawnedBullet.GetComponent<Bullet>().speed = bulletSpeed;
             spawnedBullet.GetComponent<Bullet>().bulletType = BulletType.EnemyBullet;
+            spawnedBullet.GetComponent<Bullet>().SetDirection(Vector3.down);
             cooldown = fireRate;
         }
     }
@@ -46,7 +47,7 @@ public class EnemyShooting : MonoBehaviour
     public void ResetActiveShooters(Transform deadShooter)
     {
         List<Transform> rows = enemyMovement.TotalRows();
-        if (rows.IndexOf(deadShooter.parent) - 1 < 0)
+        if (rows.IndexOf(deadShooter.parent) <= 0)
         {
             activeShooters.Remove(deadShooter);
             return;
@@ -56,12 +57,15 @@ public class EnemyShooting : MonoBehaviour
 
         foreach (Transform enemy in secondLastRow)
         {
-            if (enemy.position.x == deadShooter.position.x)
+            if (Mathf.Abs(enemy.position.x - deadShooter.position.x) < 0.1f) // tolerant match
             {
-                activeShooters.Remove(deadShooter);
                 activeShooters.Add(enemy);
+                break;
             }
         }
+            
+        activeShooters.Remove(deadShooter);
+            
         foreach (Transform row in rows)
         {
             if (row.childCount == 0)
@@ -71,7 +75,7 @@ public class EnemyShooting : MonoBehaviour
         }
 
     }
-    
+
     public List<Transform> GetActiveShooters()
     {
         return activeShooters;

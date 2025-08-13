@@ -10,14 +10,12 @@ public class PlayerMovement : MonoBehaviour
         leftBound = -3f;
         rightBound = 3f;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
     void FixedUpdate()
     {
+        if (!GameManager.instance.canMove)
+        {
+            return; // Exit if movement is disabled
+        }
         Movement();
     }
     private void Movement()

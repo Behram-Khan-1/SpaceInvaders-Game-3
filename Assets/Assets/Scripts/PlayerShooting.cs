@@ -15,6 +15,10 @@ public class PlayerShooting : MonoBehaviour
     }
     void Update()
     {
+        if (!GameManager.instance.canShoot)
+        {
+            return; // Exit if shooting is disabled
+        }
         if (hasShot == true)
         {
             fireRate = fireRate - Time.deltaTime;
@@ -30,6 +34,7 @@ public class PlayerShooting : MonoBehaviour
             var spawnedBullet = Instantiate(Bullet, transform.position + new Vector3(0, 0.1f, 0), transform.rotation);
             spawnedBullet.GetComponent<Bullet>().speed = Speed;
             spawnedBullet.GetComponent<Bullet>().bulletType = BulletType.PlayerBullet;
+            spawnedBullet.GetComponent<Bullet>().SetDirection(Vector3.up);
             hasShot = true;
             fireRate = initialFireRate;
         }
